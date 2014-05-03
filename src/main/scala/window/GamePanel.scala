@@ -37,35 +37,33 @@ class GamePanel(ctr: GameCtr) extends JPanel {
 
       /* *************ゲーム部分************* */
       case Scene.GAME =>
-        val (player, enemys, walls) = ctr.getObj
-        // 死んでいる敵の血 
-        enemys.filter(!_.life).foreach(e => g.drawImage(Character.imgMap(s"blad${e.bladType}"), e.x, e.y, this))
+        // 死んでいる敵の血
+        ctr.enemys.filter(!_.life).foreach(e => g.drawImage(Character.imgMap(s"blad${e.bladType}"), e.x, e.y, this))
         // 自分の弾
         g.setColor(Color.GRAY)
-        player.bullets.filter(_.enable).foreach(b => g.fillRect(b.x, b.y, b.w, b.h))
+        ctr.player.bullets.filter(_.enable).foreach(b => g.fillRect(b.x, b.y, b.w, b.h))
         // 敵の弾
         g.setColor(Color.RED)
-        enemys.foreach(_.bullets.filter(_.enable).foreach { b =>
+        ctr.enemys.foreach(_.bullets.filter(_.enable).foreach { b =>
           g.fillRect(b.x, b.y, b.w, b.h)
           g.fillRect(b.x - 3, b.y + 2, b.w + 6, 2)
         })
         // 壁、耐久度により薄くなっていく
-        walls.filter(_.life).foreach { w =>
+        ctr.walls.filter(_.life).foreach { w =>
           g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, w.lifeCount / Wall.LIFE));
           g.drawImage(w.icon, w.x, w.y, this)
         }
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
         // 自分
-        g.drawImage(player.icon, player.x, player.y, this)
+        g.drawImage(ctr.player.icon, ctr.player.x, ctr.player.y, this)
         // 敵
-        enemys.filter(_.life).foreach(e => g.drawImage(e.icon, e.x, e.y, this))
+        ctr.enemys.filter(_.life).foreach(e => g.drawImage(e.icon, e.x, e.y, this))
         // 壊れた壁
-        walls.filter(!_.life).foreach(w => g.drawImage(Wall.scrap, (w.x + w.w / 2 - Wall.sw / 2), (w.y + w.h / 2 - Wall.sh / 2), this))
+        ctr.walls.filter(!_.life).foreach(w => g.drawImage(Wall.scrap, (w.x + w.w / 2 - Wall.sw / 2), (w.y + w.h / 2 - Wall.sh / 2), this))
 
       /* *************ゲーム終了後部分************* */
       case Scene.FINISH =>
-        val (player, enemys, walls) = ctr.getObj
-        val msg = if (player.life) s"抵抗する人々を${ctr.clearTime}秒で撲滅完了！" else "どんまい＾＾；"
+        val msg = if (ctr.player.life) s"抵抗する人々を${ctr.clearTime}秒で撲滅完了！" else "どんまい＾＾；"
         g.setColor(Color.BLUE)
         g.setFont(new Font("メイリオ", Font.BOLD, 32))
         g.drawString(msg, 100, Main.HEIGHT / 2 - 100)

@@ -14,28 +14,32 @@ class GameCtr {
   var scene: Scene = Scene.MENU // 今どのシーン(Menu,Game,...)か表す
   val keys = scala.collection.mutable.Set.empty[Keys] // 押されているキー
 
-  // Viewが描画するときに必要なオブジェクトを渡す 
-  def getObj(): (Player, Seq[Enemy], Seq[Wall]) = (game.player, game.enemys, game.walls)
+  //  // Viewが描画するときに必要なオブジェクトを渡す
+  //  def getObj(): (Player, Seq[Enemy], Seq[Wall]) = (game.player, game.enemys, game.walls)
 
   // Modelから呼ばれる
   def paint() = gp.repaint()
 
+  def player = game.player
+  def walls = game.walls
+  def enemys = game.enemys
+
   // キーが押されたら登録
   def keyPressed(e: KeyEvent) = e.getKeyCode() match {
     case KeyEvent.VK_RIGHT => keys += (Keys.Right)
-    case KeyEvent.VK_LEFT => keys += (Keys.Left)
+    case KeyEvent.VK_LEFT  => keys += (Keys.Left)
     case KeyEvent.VK_SPACE => keys += (Keys.Space)
     case KeyEvent.VK_ENTER => keys += (Keys.Enter)
-    case _ =>
+    case _                 =>
   }
-  
+
   // キーが離されたら登録
   def keyReleased(e: KeyEvent) = e.getKeyCode() match {
     case KeyEvent.VK_RIGHT => keys -= (Keys.Right)
-    case KeyEvent.VK_LEFT => keys -= (Keys.Left)
+    case KeyEvent.VK_LEFT  => keys -= (Keys.Left)
     case KeyEvent.VK_SPACE => keys -= (Keys.Space)
     case KeyEvent.VK_ENTER => keys -= (Keys.Enter)
-    case _ =>
+    case _                 =>
   }
 
   // ゲームを開始する
