@@ -34,10 +34,11 @@ abstract class Character(var x: Int, var y: Int, name: String) {
 object Character {
   val EXT = ".png"
   val PATH = "./res/"
-  if ((new File(PATH)).list() == null) {
-    Dialog.showMessage(message = s"${PATH}に必要な画像を配置してください。", title = "必要な画像がないよ。", messageType = Message.Error)
-    throw new IllegalArgumentException("必要な画像がありません。")
+  val imgs = Option((new File(PATH)).list()) match {
+    case Some(list) => list.filter(_.endsWith(EXT))
+    case None =>
+      Dialog.showMessage(message = s"${PATH}に必要な画像を配置してください。", title = "必要な画像がないよ。", messageType = Message.Error)
+      throw new IllegalArgumentException("必要な画像がありません。")
   }
-  val imgs = (new File(PATH)).list().filter(_.endsWith(EXT))
   val imgMap = (for (img <- imgs) yield (img.dropRight(EXT.length), ImageIO.read(new File(PATH + img)))) toMap
 }
